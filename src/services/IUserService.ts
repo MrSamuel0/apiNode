@@ -1,10 +1,10 @@
-import UserModel from "../models/UserModel";
+import { IUser } from "../models/UserModel";
 import UserDto from "../dto/UserDto";
 
 interface IUserService {
-    addUser: (user: UserModel) => UserDto;
+    addUser: (user: IUser) => UserDto;
     getUser: (id: number) => UserDto;
-    updateUser: (id: number, user: UserModel) => UserDto;
+    updateUser: (id: number, user: IUser) => UserDto;
     deleteUser: (id: number) => void;
 }
 

@@ -1,12 +1,13 @@
-import UserModel from "../models/UserModel";
 import UserDto from "../dto/UserDto";
+import { IUser } from "../models/UserModel";
 import IUserService from "./IUserService";
+import IUserRepository from "../repository/IUserRepository"
 
 export default class UserService implements IUserService {
-  constructor(private readonly context: UserModel[]){}
+  constructor(private readonly repo: IUserRepository){}
 
   addUser(user: UserModel): UserDto {
-    this.context.push(user);
+    this.repo.push(user);
     return new UserDto(user);
   }
 

@@ -1,14 +1,17 @@
-export default class UserModel {
+import { Schema, model, Document } from "mongoose"
+
+export interface IUser extends Document {
     id: number
     name: string
     email: string
     age: number
-    
-    constructor(private i: number, private n: string, private e: string, private a: number) {
-        this.name = n
-        this.email = e
-        this.age = a
-        this.id = i
-    }
-
 }
+
+const userSchema = new Schema<IUser>({
+    id: { type: Number, unique: true },
+    name: {type: String, required: true},
+    email: {type: String, required: true},
+    age: {type: Number, required: true}
+})
+
+export const userModel = model<IUser>("User", userSchema)
