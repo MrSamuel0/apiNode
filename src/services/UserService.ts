@@ -1,44 +1,52 @@
-import UserModel from "../models/UserModel";
 import UserDto from "../dto/UserDto";
-import IUserService from "./IUserService";
+import { IUser } from "../models/UserModel"
+import IUserService from "./IUserService"
+import IUserRepository from "../repository/IUserRepository"
 
 export default class UserService implements IUserService {
-  constructor(private readonly context: UserModel[]){}
+  constructor(private readonly repo: IUserRepository){}
 
-  addUser(user: UserModel): UserDto {
-    this.context.push(user);
-    return new UserDto(user);
+  async addUser(user: IUser): Promise<UserDto> {
+    const exists = await this.repo.getUser(user.id)
+
+    if(exists) {
+      throw new Error("User already exists")
+    }
+
+    const newUser = await this.repo.createUser(user)
+
+    return new UserDto(newUser)
   }
 
-  getUser(id: number): UserDto {
-    const user = this.context.find(p => p.id === id)
+  async getUser(id: number): Promise<UserDto> {
+    const user = await this.repo.getUser(id)
 
     if(!user) {
       throw new Error("User not found")
     }
 
-    return new UserDto(user);
+    return new UserDto(user)
   }
 
-  updateUser(id: number, user: UserModel): UserDto {
-    const oldUser= this.context.find(p => p.id === id)
+  async updateUser(id: number, user: IUser): Promise<UserDto> {
+    const oldUser= await this.repo.getUser(id)
 
     if(!oldUser) {
       throw new Error("User not found")
     }
 
-    Object.assign(oldUser, user);
+    const newUser = await this.repo.updateUser(id, user)
 
-    return new UserDto(oldUser);
+    return new UserDto(newUser)
   }
 
-  deleteUser(id: number): void {
-    const index = this.context.findIndex(p => p.id === id);
+  async deleteUser(id: number): Promise<void> {
+    const user = await this.repo.getUser(id)
 
-    if (index === -1) {
-      throw new Error("User not found");
+    if (!user) {
+      throw new Error("User not found")
     }
 
-    this.context.splice(index, 1);
+    await this.repo.deleteUser(id)
   }
 }
