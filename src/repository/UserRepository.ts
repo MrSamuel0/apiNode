@@ -14,7 +14,7 @@ export default class UserRepository implements IUserRepository {
     }
 
     async updateUser(id: number, user: IUser): Promise<IUser | null> {
-        return this.db.findOneAndUpdate({ id }, user, { new: true });
+        return this.db.findOneAndUpdate({ id }, user, { returnDocument: "after" });
     }
 
     async deleteUser(id: number): Promise<void> {
